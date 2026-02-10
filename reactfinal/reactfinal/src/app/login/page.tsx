@@ -30,7 +30,7 @@ export default function LoginPage() {
       
       // 3. Redirecionamento Inteligente (Baseado no Ponto 1 do enunciado)
       const role = res.data.user.role;
-      if (role === 'admin') router.push('/oficina');
+      if (role === 'admin') router.push('/');
       else if (role === 'mecanico') router.push('/');
       else router.push('/');
       
