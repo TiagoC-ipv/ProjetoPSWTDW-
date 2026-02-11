@@ -1,0 +1,357 @@
+/* =========================
+   RESET E BASE
+   ========================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #020617; /* fundo escuro base */
+  color: #e5e7eb;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* =========================
+   LINKS
+   ========================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* =========================
+   LAYOUT UTILITIES
+   ========================= */
+
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }
+
+.max-w-md { max-width: 28rem; }
+.max-w-4xl { max-width: 56rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+/* =========================
+   SPACING UTILITIES
+   ========================= */
+
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.p-10 { padding: 2.5rem; }
+
+.pb-4 { padding-bottom: 1rem; }
+.pb-5 { padding-bottom: 1.25rem; }
+.pt-2 { padding-top: 0.5rem; }
+.pt-4 { padding-top: 1rem; }
+.pt-8 { padding-top: 2rem; }
+
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-10 { margin-bottom: 2.5rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-10 { margin-top: 2.5rem; }
+
+/* =========================
+   TYPOGRAPHY
+   ========================= */
+
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-5xl { font-size: 3rem; }
+
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+
+.italic { font-style: italic; }
+.uppercase { text-transform: uppercase; }
+
+.tracking-tighter { letter-spacing: -0.03em; }
+.tracking-widest { letter-spacing: 0.35em; }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Helpers de tamanho muito pequeno (para labels / badges) */
+.text-10px { font-size: 0.625rem; }
+.text-9px { font-size: 0.5625rem; }
+
+/* =========================
+   COLORS – TEXT
+   ========================= */
+
+.text-white { color: #ffffff; }
+.text-black { color: #000000; }
+
+.text-gray-50 { color: #f9fafb; }
+.text-gray-100 { color: #f3f4f6; }
+.text-gray-400 { color: #9ca3af; }
+.text-gray-500 { color: #6b7280; }
+.text-gray-600 { color: #4b5563; }
+
+.text-blue-400 { color: #60a5fa; }
+.text-blue-600 { color: #2563eb; }
+.text-blue-900 { color: #1e3a8a; }
+
+.text-red-500 { color: #ef4444; }
+.text-green-500 { color: #22c55e; }
+.text-yellow-500 { color: #eab308; }
+
+/* =========================
+   COLORS – BACKGROUND
+   ========================= */
+
+.bg-white { background-color: #ffffff; }
+.bg-black { background-color: #000000; }
+
+.bg-gray-50 { background-color: #020617; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.bg-gray-800 { background-color: #1f2937; }
+
+.bg-slate-800 { background-color: #1e293b; }
+.bg-slate-900 { background-color: #020617; }
+
+.bg-blue-500 { background-color: #3b82f6; }
+.bg-blue-600 { background-color: #2563eb; }
+.bg-blue-700 { background-color: #1d4ed8; }
+
+.bg-green-600 { background-color: #16a34a; }
+.bg-red-600 { background-color: #dc2626; }
+
+/* =========================
+   BORDERS & RADIUS
+   ========================= */
+
+.rounded { border-radius: 0.25rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-3xl { border-radius: 1.5rem; }
+.rounded-full { border-radius: 9999px; }
+
+.border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #334155;
+}
+
+.border-2 { border-width: 2px; }
+.border-b { border-bottom-width: 1px; }
+.border-dashed { border-style: dashed; }
+
+.border-gray-200 { border-color: #e5e7eb; }
+.border-gray-600 { border-color: #4b5563; }
+.border-gray-700 { border-color: #374151; }
+
+.border-slate-700 { border-color: #334155; }
+.border-slate-800 { border-color: #1e293b; }
+
+.border-blue-500 { border-color: #3b82f6; }
+.border-blue-600 { border-color: #2563eb; }
+
+.border-red-500 { border-color: #ef4444; }
+.border-green-500 { border-color: #22c55e; }
+.border-yellow-500 { border-color: #eab308; }
+
+/* =========================
+   SHADOWS
+   ========================= */
+
+.shadow {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.45);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.55);
+}
+
+.shadow-2xl {
+  box-shadow: 0 25px 50px rgba(15, 23, 42, 0.7);
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bg-blue-600,
+.bg-green-600,
+.bg-red-600 {
+  color: #ffffff;
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease,
+    box-shadow 0.18s ease;
+}
+
+.bg-blue-600:hover { background-color: #1d4ed8; }
+.bg-green-600:hover { background-color: #15803d; }
+.bg-red-600:hover { background-color: #b91c1c; }
+
+.bg-blue-600:hover,
+.bg-green-600:hover,
+.bg-red-600:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.4);
+}
+
+/* =========================
+   FORM CONTROLS
+   ========================= */
+
+input,
+select,
+textarea {
+  border-radius: 0.375rem;
+  border: 1px solid #4b5563;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+}
+
+/* =========================
+   HELPERS
+   ========================= */
+
+.hidden { display: none; }
+.block { display: block; }
+/* Cores para garantir visibilidade no fundo escuro */
+.text-white { color: #ffffff !important; }
+.text-slate-300 { color: #cbd5e1 !important; }
+.text-slate-400 { color: #94a3b8 !important; }
+
+/* Classe específica para o botão de cancelados */
+.btn-ver-cancelados {
+  color: #ffffff !important; /* Força o branco */
+  font-weight: 800;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.btn-ver-cancelados:hover {
+  opacity: 1;
+  color: #60a5fa !important; /* Fica azul ao passar o rato */
+}
+/* Botões Pequenos e Estilizados */
+.btn-small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;       /* Menor altura */
+  border-radius: 8px;      /* Cantos arredondados suaves */
+  font-size: 11px;         /* Texto pequeno */
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  width: auto !important;  /* Impede que ocupe 100% da largura */
+}
+
+.btn-danger-soft {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.btn-danger-soft:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-success-soft {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.btn-success-soft:hover {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-blue-soft {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.btn-blue-soft:hover {
+  background: #3b82f6;
+  color: white;
+}

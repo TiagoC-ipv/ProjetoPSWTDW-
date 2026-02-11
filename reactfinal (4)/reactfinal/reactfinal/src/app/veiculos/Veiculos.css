@@ -1,0 +1,168 @@
+/* Layout Geral */
+.veiculos-main {
+  min-height: 100vh;
+  background-color: #0f172a; /* Slate 900 */
+  color: #ffffff;
+  padding: 2rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.veiculos-container {
+  max-width: 1024px; /* max-w-4xl */
+  margin: 0 auto;
+}
+
+.veiculos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.veiculos-title {
+  font-size: 1.875rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  margin: 0;
+}
+
+.veiculos-title span {
+  color: #60a5fa; /* Blue 400 */
+}
+
+/* Alertas */
+.error-banner {
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Formulário de Registo */
+.veiculos-form {
+  background-color: #1e293b; /* Slate 800 */
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 2.5rem;
+  border: 1px solid #334155;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.form-subtitle {
+  color: #60a5fa;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.veiculos-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .veiculos-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.veiculos-form input {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  color: white;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.veiculos-form input:focus {
+  border-color: #3b82f6;
+}
+
+/* Cards de Veículos */
+.veiculo-card {
+  background-color: #1e293b;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .veiculo-card {
+    flex-direction: row;
+  }
+}
+
+.veiculo-card:hover {
+  border-color: #3b82f6;
+}
+
+.veiculo-info h2 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.veiculo-meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  align-items: center;
+}
+
+.matricula-badge {
+  font-size: 0.75rem;
+  font-family: monospace;
+  background-color: #000;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #334155;
+  color: #f3f4f6;
+}
+
+.ano-text {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+/* Botões */
+.btn-veiculo {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+
+.btn-veiculo:hover { opacity: 0.9; }
+
+.btn-blue { background-color: #2563eb; color: white; }
+.btn-gray { background-color: #4b5563; color: white; }
+.btn-green { background-color: #16a34a; color: white; width: 100%; padding: 0.75rem; }
+.btn-edit { background-color: rgba(37, 99, 235, 0.1); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.5); }
+.btn-delete { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); }
+
+.flex-gap { display: flex; gap: 0.75rem; }
