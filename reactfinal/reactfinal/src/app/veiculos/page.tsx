@@ -2,8 +2,8 @@
 
 import { useEffect, useState, FormEvent } from 'react';
 import api from '../../lib/api'; 
+import './Veiculos.css';
 
-// 1. Definição do contrato de dados (Interfaces)
 interface Veiculo {
   _id?: string;
   marca: string;
@@ -19,15 +19,10 @@ interface UserSession {
   role: string;
 }
 
-// Interface para capturar erros do Axios de forma tipada
 interface ApiErrorResponse {
   response?: {
-    data?: {
-      msg?: string;
-    };
-    status?: number;
+    data?: { msg?: string };
   };
-  message: string;
 }
 
 export default function VeiculosPage() {
@@ -37,124 +32,143 @@ export default function VeiculosPage() {
   const [userId, setUserId] = useState<string | null>(null);
 
   const [mostrarForm, setMostrarForm] = useState<boolean>(false);
+  const [editandoId, setEditandoId] = useState<string | null>(null);
   const [marca, setMarca] = useState<string>('');
   const [modelo, setModelo] = useState<string>('');
   const [matricula, setMatricula] = useState<string>('');
-  const [ano, setAno] = useState<number>(2025);
+  const [ano, setAno] = useState<number>(new Date().getFullYear());
 
   useEffect(() => {
-    const carregarDados = () => {
-      const userString = localStorage.getItem('user');
-      if (userString) {
-        try {
-          const user: UserSession = JSON.parse(userString);
-          const id = user.id || user._id || null;
-          setUserId(id);
-          if (id) fetchVeiculos(id);
-        } catch (e) {
-          setErro("Erro ao processar sessão.");
-        }
-      } else {
-        setErro("Utilizador não autenticado.");
-        setLoading(false);
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      try {
+        const user: UserSession = JSON.parse(userString);
+        const id = user.id || user._id || null;
+        setUserId(id);
+        if (id) fetchVeiculos(id);
+      } catch (err) {
+        setErro("Erro ao processar sessão.");
       }
-    };
-    carregarDados();
+    } else {
+      setErro("Utilizador não autenticado.");
+      setLoading(false);
+    }
   }, []);
 
-  const fetchVeiculos = async (id: string): Promise<void> => {
+  const fetchVeiculos = async (id: string) => {
     try {
-      // Indicamos ao axios que o retorno é um array de Veiculo
       const res = await api.get<Veiculo[]>(`/veiculos/cliente/${id}`);
       setVeiculos(res.data);
-      setErro('');
     } catch (err) {
-      const error = err as ApiErrorResponse;
-      setErro(error.response?.data?.msg || "Erro ao carregar veículos.");
+      setErro("Erro ao carregar veículos.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleNovoVeiculo = async (e: FormEvent): Promise<void> => {
+  const handleSubmeter = async (e: FormEvent) => {
     e.preventDefault();
     if (!userId) return;
-    
+    const payload = { marca, modelo, matricula, ano, clienteId: userId };
     try {
-      await api.post('/veiculos', { 
-        marca, 
-        modelo, 
-        matricula, 
-        ano: Number(ano), 
-        clienteId: userId 
-      });
-      
-      setMarca(''); setModelo(''); setMatricula(''); setAno(2025);
-      setMostrarForm(false);
+      if (editandoId) {
+        await api.put(`/veiculos/${editandoId}`, payload);
+      } else {
+        await api.post('/veiculos', payload);
+      }
+      cancelarEdicao();
       fetchVeiculos(userId);
     } catch (err) {
       const error = err as ApiErrorResponse;
-      setErro(error.response?.data?.msg || "Erro ao adicionar veículo.");
+      setErro(error.response?.data?.msg || "Erro ao processar veículo.");
     }
   };
 
-  if (loading) return <p className="text-white p-8">A carregar garagem...</p>;
+  const handleApagar = async (id: string) => {
+    if (!confirm("Deseja mesmo remover este veículo?")) return;
+    try {
+      await api.delete(`/veiculos/${id}`);
+      if (userId) fetchVeiculos(userId);
+    } catch (err) {
+      setErro("Erro ao apagar veículo.");
+    }
+  };
+
+  const prepararEdicao = (v: Veiculo) => {
+    setEditandoId(v._id || null);
+    setMarca(v.marca);
+    setModelo(v.modelo);
+    setMatricula(v.matricula);
+    setAno(v.ano);
+    setMostrarForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelarEdicao = () => {
+    setEditandoId(null);
+    setMarca(''); setModelo(''); setMatricula(''); setAno(new Date().getFullYear());
+    setMostrarForm(false);
+    setErro('');
+  };
+
+  if (loading) return <main className="veiculos-main"><p className="loading-state">A carregar garagem...</p></main>;
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold italic tracking-tight">🚗 Meus Veículos</h1>
-        <button 
-          onClick={() => setMostrarForm(!mostrarForm)}
-          className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-bold transition-colors"
-        >
-          {mostrarForm ? 'Cancelar' : '+ Registar Carro'}
-        </button>
-      </div>
-
-      {erro && (
-        <div className="bg-red-500/20 border border-red-500 text-red-100 p-3 rounded-lg mb-6">
-          {erro}
+    <main className="veiculos-main">
+      <div className="veiculos-container">
+        <div className="veiculos-header">
+          <h1 className="veiculos-title">
+            🚗 Meus <span>Veículos</span>
+          </h1>
+          <button 
+            onClick={() => mostrarForm ? cancelarEdicao() : setMostrarForm(true)}
+            className={`btn-veiculo ${mostrarForm ? 'btn-gray' : 'btn-blue'}`}
+          >
+            {mostrarForm ? 'Fechar' : '+ Registar Carro'}
+          </button>
         </div>
-      )}
 
-      {mostrarForm && (
-        <form onSubmit={handleNovoVeiculo} className="bg-slate-800 p-6 rounded-xl mb-6 space-y-4 shadow-2xl border border-slate-700">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Marca" value={marca} onChange={(e) => setMarca(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded text-white outline-none focus:border-blue-500" required />
-            <input type="text" placeholder="Modelo" value={modelo} onChange={(e) => setModelo(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded text-white outline-none focus:border-blue-500" required />
-            <input type="text" placeholder="Matrícula" value={matricula} onChange={(e) => setMatricula(e.target.value.toUpperCase())} className="w-full p-3 bg-slate-900 border border-slate-700 rounded text-white outline-none focus:border-blue-500" required />
-            <input type="number" placeholder="Ano" value={ano} onChange={(e) => setAno(Number(e.target.value))} className="w-full p-3 bg-slate-900 border border-slate-700 rounded text-white outline-none focus:border-blue-500" required />
-          </div>
-          <button type="submit" className="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-black uppercase tracking-widest">Guardar na Base de Dados</button>
-        </form>
-      )}
+        {erro && <div className="error-banner">{erro}</div>}
 
-      <div className="grid grid-cols-1 gap-4">
-        {veiculos.length === 0 ? (
-          <p className="text-slate-500 italic text-center py-10">Nenhum veículo registado.</p>
-        ) : (
-          veiculos.map((v) => (
-            <div key={v._id || v.matricula} className="bg-slate-800 border-l-4 border-blue-500 rounded-xl p-6 shadow-md hover:scale-[1.01] transition-transform">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-2xl font-black uppercase">{v.marca} <span className="text-blue-400 font-normal">{v.modelo}</span></h2>
-                  <p className="text-slate-400 mt-1 font-mono bg-slate-900 inline-block px-2 py-1 rounded border border-slate-700 tracking-tighter">
-                    MATRÍCULA: {v.matricula}
-                  </p>
+        {mostrarForm && (
+          <form onSubmit={handleSubmeter} className="veiculos-form">
+            <h3 className="form-subtitle">
+              {editandoId ? '🔧 Editar Veículo' : '📝 Novo Registo'}
+            </h3>
+            <div className="veiculos-form-grid">
+              <input type="text" placeholder="Marca" value={marca} onChange={(e) => setMarca(e.target.value)} required />
+              <input type="text" placeholder="Modelo" value={modelo} onChange={(e) => setModelo(e.target.value)} required />
+              <input type="text" placeholder="Matrícula" value={matricula} onChange={(e) => setMatricula(e.target.value.toUpperCase())} required />
+              <input type="number" placeholder="Ano" value={ano} onChange={(e) => setAno(Number(e.target.value))} min="1900" required />
+            </div>
+            <button type="submit" className="btn-veiculo btn-green" style={{fontWeight: 900, letterSpacing: '0.1em'}}>
+              {editandoId ? 'Atualizar' : 'Guardar Carro'}
+            </button>
+          </form>
+        )}
+
+        <div className="veiculos-list">
+          {veiculos.length === 0 ? (
+            <p className="empty-state" style={{textAlign: 'center', opacity: 0.5, fontStyle: 'italic', padding: '3rem'}}>Nenhum veículo registado.</p>
+          ) : (
+            veiculos.map((v) => (
+              <div key={v._id} className="veiculo-card">
+                <div className="veiculo-info">
+                  <h2>{v.marca} <span style={{color: '#60a5fa'}}>{v.modelo}</span></h2>
+                  <div className="veiculo-meta">
+                    <span className="matricula-badge">{v.matricula}</span>
+                    <span className="ano-text">Ano: {v.ano}</span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-slate-500 font-bold uppercase">Ano de Fabrico</p>
-                  <p className="text-xl font-bold">{v.ano}</p>
+                
+                <div className="flex-gap">
+                  <button onClick={() => prepararEdicao(v)} className="btn-veiculo btn-edit">Editar</button>
+                  <button onClick={() => v._id && handleApagar(v._id)} className="btn-veiculo btn-delete">Apagar</button>
                 </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
-
-      <div className="mt-12 text-center text-[10px] text-slate-600 uppercase tracking-widest">
-        Sessão Ativa: {userId}
+            ))
+          )}
+        </div>
       </div>
     </main>
   );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '../../../lib/api';
+import './StaffAgenda.css'; // Importação do teu CSS personalizado
 
 // --- INTERFACES ---
 interface AdminPopulated { _id: string; nome: string; }
@@ -26,7 +27,6 @@ export default function StaffAgendaPage() {
   const [oficinas, setOficinas] = useState<Oficina[]>([]);
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   
-  // Estados de UI
   const [oficinaExpandida, setOficinaExpandida] = useState<string | null>(null);
   const [loadingAgenda, setLoadingAgenda] = useState(false);
   const [itemExpandido, setItemExpandido] = useState<string | null>(null);
@@ -85,56 +85,51 @@ export default function StaffAgendaPage() {
     const isCancelado = item.estado === 'Cancelado';
 
     return (
-      <div key={item._id} className={`rounded-2xl border transition-all duration-300 ${
-          isAberto ? 'bg-slate-900 border-blue-500/40 shadow-inner' : 'bg-slate-800/60 border-slate-700 hover:border-slate-600'
-        } ${isCancelado ? 'opacity-50 grayscale' : ''}`}>
+      <div key={item._id} className={`agenda-card ${isAberto ? 'expandido' : ''} ${isCancelado ? 'cancelado' : ''}`}>
         
-        <div onClick={() => setItemExpandido(isAberto ? null : item._id)} className="p-5 flex justify-between items-center cursor-pointer select-none">
-          <div className="flex gap-4 items-center">
-            <div className={`w-1.5 h-10 rounded-full ${
-              isCancelado ? 'bg-red-600' : item.estado === 'Pendente' ? 'bg-yellow-500' : 'bg-blue-400'
+        <div onClick={() => setItemExpandido(isAberto ? null : item._id)} className="agenda-card-header">
+          <div className="agenda-info-group">
+            <div className={`status-indicator ${
+              isCancelado ? 'status-cancelado' : item.estado === 'Pendente' ? 'status-pendente' : 'status-ativo'
             }`} />
             <div>
-              <p className="text-[9px] text-blue-400 font-bold uppercase">{item.turno} — {new Date(item.data).toLocaleDateString()}</p>
-              <h4 className="text-sm font-black uppercase leading-tight">{item.veiculoId?.marca} {item.veiculoId?.modelo}</h4>
-              <p className="text-[10px] text-slate-500 font-mono tracking-tighter">{item.veiculoId?.matricula}</p>
+              <p className="card-label-mini">{item.turno} — {new Date(item.data).toLocaleDateString()}</p>
+              <h4 className="card-veiculo-title">{item.veiculoId?.marca} {item.veiculoId?.modelo}</h4>
+              <p className="card-matricula">{item.veiculoId?.matricula}</p>
             </div>
           </div>
-          <span className={`text-[9px] font-black px-3 py-1 rounded border ${isCancelado ? 'text-red-500 border-red-500/20' : 'text-green-500 border-green-500/20'}`}>
+          <span className={`badge-status ${isCancelado ? 'text-red' : 'text-green'}`}>
             {item.estado}
           </span>
         </div>
 
         {isAberto && (
-          <div className="px-5 pb-5 pt-2 border-t border-slate-700/50 bg-slate-900/40 animate-in slide-in-from-top-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+          <div className="agenda-details">
+            <div className="details-grid">
               <div>
-                <p className="text-[9px] text-slate-500 uppercase font-black mb-1 italic tracking-widest text-blue-400/60">Trabalho Solicitado:</p>
-                <p className="text-xs text-slate-200 bg-slate-800 p-3 rounded-lg border border-slate-700">{item.servico}</p>
-                <p className="mt-3 text-[9px] text-slate-500 uppercase font-black mb-1 italic">
+                <p className="details-label">Trabalho Solicitado:</p>
+                <div className="servico-box">{item.servico}</div>
+                <p className="details-footer">
                   {user?.role === 'cliente' ? 'Oficina:' : 'Cliente:'}
-                  <span className="text-slate-300 font-bold uppercase ml-1">
+                  <span className="details-footer-name">
                     {user?.role === 'cliente' ? item.oficinaId?.nome : item.clienteId?.nome}
                   </span>
                 </p>
               </div>
 
-              <div className="flex flex-col justify-end gap-2">
+              <div className="actions-column">
                 {user?.role === 'cliente' ? (
                   <button 
                     onClick={(e) => { e.stopPropagation(); mudarEstado(item._id, isCancelado ? 'Pendente' : 'Cancelado'); }}
-                    className={`w-full p-2.5 rounded-xl text-[10px] font-black uppercase transition-all border ${
-                      isCancelado ? 'bg-green-600/20 text-green-500 border-green-500/30 hover:bg-green-600 hover:text-white' 
-                                 : 'bg-red-600/20 text-red-500 border-red-500/30 hover:bg-red-600 hover:text-white'
-                    }`}
+                    className={`btn-agenda ${isCancelado ? 'btn-reactivate' : 'btn-cancel'}`}
                   >
                     {isCancelado ? '▶ REATIVAR' : '✖ CANCELAR'}
                   </button>
                 ) : (
                   !isCancelado && user?.role === 'mecanico' && (
-                    <div className="flex gap-2">
-                      <button onClick={(e) => { e.stopPropagation(); mudarEstado(item._id, 'Em curso', contextOficinaId); }} className="flex-1 bg-blue-600/20 text-blue-400 border border-blue-600/30 p-2.5 rounded-xl text-[10px] font-black uppercase transition-all">▶ INICIAR</button>
-                      <button onClick={(e) => { e.stopPropagation(); mudarEstado(item._id, 'Concluído', contextOficinaId); }} className="flex-1 bg-green-600/20 text-green-500 border border-green-500/30 p-2.5 rounded-xl text-[10px] font-black uppercase transition-all">✔ CONCLUIR</button>
+                    <div className="btn-group">
+                      <button onClick={(e) => { e.stopPropagation(); mudarEstado(item._id, 'Em curso', contextOficinaId); }} className="btn-agenda btn-start">▶ INICIAR</button>
+                      <button onClick={(e) => { e.stopPropagation(); mudarEstado(item._id, 'Concluído', contextOficinaId); }} className="btn-agenda btn-done">✔ CONCLUIR</button>
                     </div>
                   )
                 )}
@@ -147,61 +142,59 @@ export default function StaffAgendaPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white p-8">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-black italic text-blue-400 font-mono tracking-tighter uppercase border-b border-slate-800 pb-4 mb-10">Agenda</h1>
+    <main className="agenda-main">
+      <div className="agenda-container">
+        <h1 className="agenda-title">Agenda</h1>
 
-        <div className="space-y-6">
+        <div className="agenda-list">
           {user?.role === 'cliente' ? (
             <>
-              {/* ATIVOS */}
-              <div className="space-y-3">
-                {agendamentos.filter(a => a.estado !== 'Cancelado').length > 0 ? (
-                  agendamentos.filter(a => a.estado !== 'Cancelado').map(item => renderCard(item))
+              <div className="cards-stack">
+                {agendamentos.filter(a => a.estado !== 'Cancelado' && a.veiculoId).length > 0 ? (
+                  agendamentos.filter(a => a.estado !== 'Cancelado' && a.veiculoId).map(item => renderCard(item))
                 ) : (
-                  <div className="text-center py-10 border border-dashed border-slate-800 rounded-3xl text-slate-500 uppercase text-xs italic">Sem marcações ativas.</div>
+                  <div className="empty-state">Sem marcações ativas.</div>
                 )}
               </div>
 
-              {/* CANCELADOS */}
-              {agendamentos.some(a => a.estado === 'Cancelado') && (
-                <div className="mt-10">
-                  <button onClick={() => setMostrarCancelados(!mostrarCancelados)} className="text-[10px] font-black uppercase text-slate-500 hover:text-red-400 flex items-center gap-2">
-                    {mostrarCancelados ? 'Ocultar' : 'Ver'} Cancelados ({agendamentos.filter(a => a.estado === 'Cancelado').length}) {mostrarCancelados ? '▲' : '▼'}
+              {agendamentos.some(a => a.estado === 'Cancelado' && a.veiculoId) && (
+                <div className="cancelados-section">
+                  <button onClick={() => setMostrarCancelados(!mostrarCancelados)} className="btn-ver-cancelados">
+                    {mostrarCancelados ? 'Ocultar' : 'Ver'} Cancelados ({agendamentos.filter(a => a.estado === 'Cancelado' && a.veiculoId).length}) {mostrarCancelados ? '▲' : '▼'}
                   </button>
                   {mostrarCancelados && (
-                    <div className="mt-4 animate-in fade-in slide-in-from-top-2">{agendamentos.filter(a => a.estado === 'Cancelado').map(item => renderCard(item))}</div>
+                    <div className="cards-stack fade-in-top">
+                      {agendamentos.filter(a => a.estado === 'Cancelado' && a.veiculoId).map(item => renderCard(item))}
+                    </div>
                   )}
                 </div>
               )}
             </>
           ) : (
-            /* STAFF/ADMIN */
             oficinas.map((oficina) => {
               const isAberta = oficinaExpandida === oficina._id;
-              // Filtra apenas o que não está cancelado para o staff
-              const ativosNaOficina = agendamentos.filter(a => a.estado !== 'Cancelado');
+              const ativosNaOficina = agendamentos.filter(a => a.estado !== 'Cancelado' && a.veiculoId);
 
               return (
-                <div key={oficina._id} className={`rounded-3xl border transition-all duration-500 ${isAberta ? 'bg-slate-800 border-blue-500 shadow-2xl' : 'bg-slate-800/40 border-slate-700 hover:border-slate-500'}`}>
-                  <div onClick={() => toggleOficina(oficina._id)} className="p-8 flex justify-between items-center cursor-pointer group">
-                    <div>
-                      <h2 className="text-2xl font-black uppercase tracking-tight group-hover:text-blue-400 transition-colors">{oficina.nome}</h2>
-                      <p className="text-slate-500 text-xs font-mono italic">{oficina.morada}</p>
+                <div key={oficina._id} className={`oficina-card ${isAberta ? 'aberta' : ''}`}>
+                  <div onClick={() => toggleOficina(oficina._id)} className="oficina-header">
+                    <div className="oficina-info">
+                      <h2 className="oficina-name">{oficina.nome}</h2>
+                      <p className="oficina-address">{oficina.morada}</p>
                     </div>
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${isAberta ? 'bg-blue-500 border-blue-500 rotate-45 text-white shadow-lg' : 'border-slate-700 bg-slate-900 group-hover:border-blue-400'}`}>
-                      <span className="text-2xl font-light">+</span>
+                    <div className="plus-icon">
+                      <span>+</span>
                     </div>
                   </div>
 
                   {isAberta && (
-                    <div className="px-8 pb-8 pt-4 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="oficina-body">
                       {loadingAgenda ? (
-                        <div className="text-center py-10 text-slate-500 animate-pulse font-mono uppercase text-[10px]">Acedendo...</div>
+                        <div className="loading-agenda">Acedendo...</div>
                       ) : ativosNaOficina.length > 0 ? (
                         ativosNaOficina.map((item) => renderCard(item, oficina._id))
                       ) : (
-                        <div className="text-center py-10 text-slate-600 font-mono text-[10px] uppercase border border-dashed border-slate-800 rounded-2xl">Sem agendamentos ativos.</div>
+                        <div className="empty-state-dashed">Sem agendamentos ativos.</div>
                       )}
                     </div>
                   )}
