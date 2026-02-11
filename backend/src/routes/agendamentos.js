@@ -53,5 +53,17 @@ router.patch('/:id/estado', async (req, res) => {
     res.status(400).json({ msg: 'Erro ao atualizar estado' });
   }
 });
-
+router.patch('/:id/estado', async (req, res) => {
+  try {
+    const { estado } = req.body; // Pode ser 'Pendente', 'Em curso', 'Concluído' ou 'Cancelado'
+    const agendamento = await Agendamento.findByIdAndUpdate(
+      req.params.id,
+      { estado },
+      { new: true }
+    );
+    res.json(agendamento);
+  } catch (err) {
+    res.status(400).json({ msg: 'Erro ao atualizar estado' });
+  }
+});
 module.exports = router;
